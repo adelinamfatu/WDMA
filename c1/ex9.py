@@ -1,8 +1,7 @@
-# [Extracting keywords from product reviews to improve sentiment analysis.]
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# Step 1: Create a sample dataset with product reviews
+# 1: Creăm un DataFrame cu recenzii de produse
 reviews = [
     "This phone has a great camera and amazing battery life.",
     "The laptop performance is very fast and smooth.",
@@ -16,11 +15,14 @@ df = pd.DataFrame({"Review": reviews})
 print("Original Product Reviews:\n")
 print(df)
 
-# Step 2: Apply TF-IDF Vectorization to extract keywords
-vectorizer = TfidfVectorizer(stop_words="english", max_features=5)  # Extract top 5 keywords
+# 2: Aplicăm TF-IDF Vectorization pentru a extrage cuvintele-cheie
+# - stop_words="english": elimină cuvinte comune în engleză (de ex. "and", "the")
+# - max_features=5: extrage doar primele 5 cuvinte-cheie după scor TF-IDF
+vectorizer = TfidfVectorizer(stop_words="english", max_features=5)
 tfidf_matrix = vectorizer.fit_transform(df["Review"])
+# - fit_transform(): construiește vocabularul pe baza tuturor recenziilor și returnează matricea TF-IDF (5 coloane, câte un cuvânt-cheie)
 
-# Step 3: Get feature names (keywords)
+# 3: Obținem numele caracteristicilor (cuvintele-cheie extrase)
 keywords = vectorizer.get_feature_names_out()
 
 print("\nExtracted Keywords from Product Reviews:\n")
