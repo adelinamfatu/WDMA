@@ -1,24 +1,46 @@
-## Exercise 1 (10 minutes): Load & Preprocess Your Dataset
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_iris
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 
-# 1. Load the Iris dataset from scikit-learn
+# 1. Încărcăm setul de date Iris din scikit-learn
 iris = load_iris()
 df = pd.DataFrame(iris.data, columns=iris.feature_names)
+#  - df conține 150 de rânduri și 4 coloane: sepal length, sepal width, petal length, petal width
 
-# 2. Introduce some artificial missing values (optional, for demonstration)
-#    Here, we'll set a few entries to NaN in the 'petal length (cm)' column
+# 2. Introducem valori lipsă artificiale (opțional, pentru demonstrație)
+# - Setăm valorile de la rândurile 5–9 la NaN în coloana 'petal length (cm)'
 df.iloc[5:10, 2] = np.nan
 
-# 3. Handle missing values
-#    We'll use SimpleImputer to replace NaNs with the mean of each column
+# 3. Tratăm valorile lipsă
+# - Folosim SimpleImputer pentru a înlocui NaN cu media coloanei respective
+imputer = SimpleImputer(strategy='mean')
+# - strategy='mean' → înlocuiește cu media coloanei
+df_imputed = pd.DataFrame(
+    imputer.fit_transform(df),
+    columns=df.columns
+)
+# - fit_transform învață media fiecărei coloane și apoi înlocuiește NaN cu aceste valori
 
-# 4. Scale the data
-#    StandardScaler transforms each feature to have mean=0 and std=1
+# 4. Scalăm datele
+# - StandardScaler transformă fiecare caracteristică astfel încât să aibă media=0 și deviația standard=1
+scaler = StandardScaler()
+df_scaled = pd.DataFrame(
+    scaler.fit_transform(df_imputed),
+    columns=df_imputed.columns
+)
+# - fit_transform calculează media și deviația standard pentru fiecare coloană pe df_imputed,
+# apoi transformă valorile inițiale în scoruri standardizate
 
-# 5. Check the results
+# 5. Verificăm rezultatele
+# - Putem verifica statisticile descriptive înainte și după scalare
+print("După imputation (statistici descriptive):")
+print(df_imputed.describe())
 
-# 6. (Optional) Print the first few rows to confirm preprocessing
+print("\nDupă scalare (statistici descriptive):")
+print(df_scaled.describe())
+
+# 6. (Opțional) Afișăm primele rânduri pentru a confirma preprocesarea
+print("\nPrimele 5 rânduri după scalare:")
+print(df_scaled.head())

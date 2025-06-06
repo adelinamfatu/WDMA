@@ -1,28 +1,33 @@
-## Exercise 2 (10 minutes): K-Means Clustering
 import pandas as pd
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
 
-# 1. Assume df_scaled is the preprocessed DataFrame from Exercise 1
-#    (containing numeric, imputed, and scaled features).
-#    For demonstration, let's simulate df_scaled with the Iris dataset's features.
+# 1. Presupunem că `df_scaled` este DataFrame-ul preprocesat din Exercitiul 1
+# (conține caracteristici numerice, imputate și scalate).
+# Aici simulăm `df_scaled` cu datele Iris scalate (pentru demonstrație).
 from sklearn.datasets import load_iris
-import numpy as np
-
-# -- SIMULATION OF PREPROCESSED DATA (Replace this block with your actual df_scaled) --
 iris = load_iris()
 df_scaled = pd.DataFrame(iris.data, columns=iris.feature_names)
-# ------------------------------------------------------------------------------------
+# - În exercițiul real, înlocuiește blocul de simulare cu DataFrame-ul tău scalat
 
-# 2. Instantiate K-Means with a chosen number of clusters, say 3
+# 2. Instanțiem K-Means cu un număr de clustere ales, de exemplu 3
+kmeans = KMeans(n_clusters=3, random_state=42)
+# - n_clusters=3: vom împărți datele în 3 grupuri (clustere)
+# - random_state=42: asigură aceeași poziționare inițială a centroidelor la fiecare rulare
 
-# 3. Fit the model to the data
+# 3. Potrivim (fit) modelul pe datele scalate
+kmeans.fit(df_scaled)
+# - .fit() găsește centroizii optimi pe baza datelor din df_scaled
 
-# 4. Extract cluster labels
+# 4. Extragem etichetele de cluster (0, 1 sau 2 pentru fiecare rând)
+labels = kmeans.labels_
+# - labels este un array de lungime egală cu numărul de rânduri din df_scaled
+# - Fiecare valoare indică indicelui clusterului corespunzător
 
-# 5. (Optional) Add the cluster labels to the DataFrame
+# 5. (Opțional) Adăugăm etichetele la DataFrame pentru a păstra segmentarea
+df_scaled['cluster'] = labels
+# - Adăugăm o coloană 'cluster' în df_scaled cu valorile din labels
+# - Astfel, putem analiza ulterior fiecare cluster separat
 
-# 6. Print or visualize the results
-
-# 7. Optional quick visualization (for 2D only)
-#    If you'd like a scatter plot, choose two features to plot.
+# 6. Afișăm primele câteva rânduri pentru a vedea etichetele de cluster
+print(df_scaled.head(10))
+# - Acum putem observa care rânduri (clienți/observații) au fost atribuite fiecărui cluster
