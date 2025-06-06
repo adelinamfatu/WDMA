@@ -5,35 +5,40 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
-# 1. Load the Wine dataset
+# 1. Încărcăm setul de date Wine (3 clase de vin)
 wine = load_wine()
-X = wine.data
-y = wine.target
+X = wine.data # Matricea de caracteristici (tabel cu 13 coloane)
+y = wine.target # Vectorul țintă (valorile 0, 1 sau 2)
 
-# (Optional) Convert to a Pandas DataFrame for easier viewing
+# (Opțional) Dacă vrem să vedem primele rânduri într-un DataFrame:
 # df = pd.DataFrame(X, columns=wine.feature_names)
 # df['target'] = y
-# print(df.head())  # Uncomment to inspect
+# print(df.head())
 
-# 2. Split the data into training (80%) and testing (20%) sets
+# 2. Împărțim datele în seturi de antrenament (80%) și test (20%)
 X_train, X_test, y_train, y_test = train_test_split(
     X, y,
-    test_size=0.2,
-    random_state=42
+    test_size=0.2, # 20% dintre exemple merg la test
+    random_state=42 # seed pentru reproducibilitate
 )
 
-# 3. Train a Naïve Bayes classifier (from Exercise 1)
+# 3. Antrenăm un clasificator Naïve Bayes gaussian (algorithmul din Exercise 1)
 nb_model = GaussianNB()
 nb_model.fit(X_train, y_train)
+# - GaussianNB calculează media și varianța fiecărei caracteristici pentru fiecare clasă
+# - y_pred_nb va conține etichetele prezise (0, 1, 2)
 y_pred_nb = nb_model.predict(X_test)
 
-# 4. Train a Logistic Regression model
-logreg_model = LogisticRegression(max_iter=2000)  # Increase max_iter to avoid convergence warnings
+# 4. Antrenăm un model de regresie logistică
+# - max_iter=2000: crește numărul de iterații pentru a evita avertismente de neconvergență
+logreg_model = LogisticRegression(max_iter=2000)
 logreg_model.fit(X_train, y_train)
+# - y_pred_logreg va conține etichetele prezise (0, 1, 2)
 y_pred_logreg = logreg_model.predict(X_test)
 
-# 5. Compare metrics: accuracy, precision, and recall for each model
-# Note: Because we have three classes in the Wine dataset, we set average='macro' (or 'weighted') for multi-class
+# 5. Comparăm metricile: acuratețe, precizie și recall pentru fiecare model
+# - average='macro' folosește media aritmetică a metricilor pe cele 3 clase,
+# tratând fiecare clasă cu aceeași importanță
 metrics = {}
 for model_name, y_pred in [("Naive Bayes", y_pred_nb), ("Logistic Regression", y_pred_logreg)]:
     accuracy = accuracy_score(y_test, y_pred)
@@ -46,7 +51,7 @@ for model_name, y_pred in [("Naive Bayes", y_pred_nb), ("Logistic Regression", y
         "Recall": recall
     }
 
-# 6. Print results
+# 6. Afișăm rezultatele pentru fiecare model
 for model_name, scores in metrics.items():
     print(f"=== {model_name} ===")
     print(f"Accuracy:  {scores['Accuracy']:.2f}")
@@ -54,7 +59,7 @@ for model_name, scores in metrics.items():
     print(f"Recall:    {scores['Recall']:.2f}")
     print()
 
-# Optional: If you’d like to see a confusion matrix for each model
+# Opțional: Matricea de confuzie pentru fiecare model (pentru analiză detaliată)
 # from sklearn.metrics import confusion_matrix
 # print("Naive Bayes Confusion Matrix:")
 # print(confusion_matrix(y_test, y_pred_nb))
